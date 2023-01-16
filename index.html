@@ -2,7 +2,7 @@
 <div id=output></div>
 <div class=menu>
 	<button onclick=generate()>shuffle</button>
-	<label for="notes">Notes</label>
+	<button onclick=prevLevel()>-1</button>
 	<input
 		value="1"
 		min=1
@@ -11,6 +11,7 @@
 		onkeyup="setLevel(event)"
 		onmouseup="setLevel(event)"
 	/>
+	<button onclick=nextLevel()>+1</button>
 </div>
 <script charset="utf-8">
 const { Factory, EasyScore, System } = Vex.Flow;
@@ -30,6 +31,16 @@ let level = 1;
 function setLevel(evt) {
 	if (evt.target.value === level) return;
 	level = evt.target.value;
+	generate();
+}
+
+function prevLevel() {
+	level -=1;
+	generate();
+}
+
+function nextLevel() {
+	level +=1;
 	generate();
 }
 
