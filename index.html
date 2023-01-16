@@ -1,0 +1,67 @@
+<script src="https://cdn.jsdelivr.net/npm/vexflow@4.0.3/build/cjs/vexflow.js"></script>
+<div id=output></div>
+<button onclick=generate()>next</button>
+<script charset="utf-8">
+const { Factory, EasyScore, System } = Vex.Flow;
+
+const notes = 'ABCDEFG'.split("").flatMap(note => [4,5].map(octave => `${note}${octave}`));
+
+function sample(arr, size) {
+	let shuffled = arr.slice(0), i = arr.length, temp, index;
+	while (i--) {
+		index = Math.floor((i + 1) * Math.random());
+		temp = shuffled[index];
+		shuffled[index] = shuffled[i];
+		shuffled[i] = temp;
+	}
+	return shuffled.slice(0, size);
+}
+
+function makeNote(score, notes) {
+	return score.notes(notes.map((note, index)=>index?note:`${note}/q`).join(", "))
+}
+
+function generate() {
+	document.querySelector('#output').innerHTML='';
+	const vf = new Factory({
+	  renderer: { elementId: 'output', width: '100vw', height: '100vh' },
+	});
+
+	const score = vf.EasyScore();
+	const system = vf.System();
+
+	system
+	  .addStave({
+		voices: [
+		  score.voice(makeNote(score, sample(notes, 4))),
+		],
+	  })
+	  .addClef('treble')
+	  .addTimeSignature('4/4');
+
+	system
+	  .addStave({
+		voices: [
+		  score.voice(makeNote(score, sample(notes, 4))),
+		],
+	  })
+	  .addClef('bass')
+	  .addTimeSignature('4/4');
+
+	system.addConnector();
+
+	vf.draw();
+}
+generate();
+</script>
+<style type="text/css" media="screen">
+* {
+	margin: 0;
+	padding: 0;
+}
+
+button {
+	position: absolute;
+	bottom: 10px;
+}
+</style>
